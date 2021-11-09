@@ -1,0 +1,24 @@
+## config.yml
+# backup of all the configuration arguments used for this specific run
+
+names:
+- mu
+- sigma
+
+labels:
+- \mu
+- \sigma
+
+initial:
+  mu: gauss(0, 10)
+  sigma: uniform(0, 10)
+
+markers:
+  mu: 2
+  sigma: 3
+
+samples: 250
+
+warmup: 150
+
+chains: 4

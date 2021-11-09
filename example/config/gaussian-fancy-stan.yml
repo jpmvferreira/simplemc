@@ -1,0 +1,32 @@
+## guassian-fancy-stan.yml
+# ez-stan configuration file to estimate the mean and standard deviation of a gaussian distribution, fancy version
+
+# The names of the parameters
+# Must match the names defined in the stan model file!
+names: [mu, sigma]
+
+# The labels to show in the plots and tables, for each parameter.
+# Defaults to the name of each parameter if not provided.
+# Latex is supported.
+labels: [\mu, \sigma]
+
+# Initial condition for each parameter, for each chain.
+# The most relevant initial conditions implemented in this program are:
+# - gauss(mu, sigma)
+# - uniform(a, b)
+# - float(a)
+initial:
+  mu: gauss(0, 10)
+  sigma: uniform(0, 10)
+
+# Line markers to show rendered in the plots.
+# These are optional and can be used to represent the true or expected values.
+markers:
+  mu: 2
+  sigma: 3
+
+# Number of steps to sample the posterior distribution, after the warmup.
+samples: 250
+
+# Number of steps to warmup each chain, which will be discarded.
+warmup: 150
