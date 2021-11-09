@@ -1,0 +1,31 @@
+## config.yml
+# backup of all the configuration arguments used for this specific run
+
+names:
+- mu
+- sigma
+
+labels:
+- \mu
+- \sigma
+
+initial:
+  mu: uniform(-10, 10)
+  sigma: uniform(1, 10)
+
+markers:
+  mu: 2
+  sigma: 3
+
+percentage: 50.0
+
+samples: 1000
+
+check: 250
+
+maxsteps: 250000
+
+walkers: 16
+
+processes: 4
+

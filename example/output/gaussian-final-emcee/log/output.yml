@@ -1,0 +1,23 @@
+## output.yml
+# backup of all the output arguments used for this specific run
+
+output: output/gaussian-final-emcee
+
+save-chain: true
+
+gzip: null
+
+lzf: false
+
+tmp: true
+
+shm: false
+
+thin: null
+
+timeseries: false
+
+noshow: false
+
+noprogress: true
+
