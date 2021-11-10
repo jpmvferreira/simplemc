@@ -4,7 +4,7 @@ with open(f"README.md") as f:
     long_description = f.read()
 
 setup(name="simplemc",
-      version="dev",
+      version="0.dev",
       description="A CLI that simplifies the usage of MCMC methos, using different algorithms, on different models, with different datasets.",
       long_description=long_description,
       long_description_content_type="text/markdown",
