@@ -1,5 +1,9 @@
 ## About
-A CLI that simplifies the usage of MCMC methos, using different algorithms, on different models, with different datasets.
+A CLI that simplifies the usage of Markov Chain Monte Carlo (MCMC) methos, using different algorithms, on different models, with different datasets.
+
+Currently it allows the user to constrain any given model, either using [Stan](https://mc-stan.org/), where the model must be coded using the Stan programming language, or [emcee](https://emcee.readthedocs.io/en/stable/), where the model is written in Python, using data from a .csv file.
+
+The output can the be analyzed to produce publication ready plots, condensing the information of several runs.
 
 
 ## Table of contents
@@ -8,9 +12,9 @@ A CLI that simplifies the usage of MCMC methos, using different algorithms, on d
   - [Stable version](#stable-version)
   - [Development version](#development-version)
 - [Quick start](#quick-start)
-  - [ez-stan](#ez-stan)
-  - [ez-emcee](#ez-emcee)
-  - [ez-analyze](#ez-analyze)
+  - [smc-stan](#smc-stan)
+  - [smc-emcee](#smc-emcee)
+  - [smc-analyze](#smc-analyze)
 - [Credits](#credits)
 - [Contributing](#contributing)
 - [Release cycle](#release-cycle)
@@ -55,11 +59,11 @@ $ pip install -e simplemc
 
 ## Quick start
 This package provides the following programs:
-- `ez-stan` wraps the stan programming language to use NUTS.
-- `ez-emcee` wraps emcee to use the ensemble sampler.
-- `ez-analyze` analyzes the output from the two previous programs.
+- `smc-stan` wraps the [Stan](https://mc-stan.org/) programming language, that uses the No-U-Turn-Sample (NUTS) a variant of the Hamiltonian Monte Carlo (HMC).
+- `smc-emcee` wraps the [emcee](https://emcee.readthedocs.io/en/stable/) python package, that makes use of the Goodman & Weare’s Affine Invariant (MCMC) Ensemble sampler.
+- `smc-analyze` analyzes the output from the two previous programs.
 
-These tools have quite a bit to offer, however, in this quick start guide, we will show how to use each flag, for each program, so that you can understand how to use them. Don't forget that there's always the help dialog (`-h` or `--help`) to list all available flags, organized by categories, with a brief description of what they do.
+These tools have quite a bit to offer and we will show you how to use each flag, for each program, to provide context on how to use them. Don't forget that there's always the help dialog (`-h` or `--help`) to list all available flags, organized by categories, with a brief description of what they do.
 
 To make getting started easy there's a folder named `example` on this repository, which includes the files used during this short tutorial.
 
@@ -73,12 +77,11 @@ And now change directory to this folder, where all the action will take place:
 $ cd simplemc/example
 ```
 
-### General considerations
-The format for a generic data file must be the following:
+An additional note, the format for any data file provided must be the following:
 ```csv
 # this is a comment
-# comments are obviously ignored
-# there must be no space between comas (i.e.: don't use ", " as a separator)
+# comments are obviously ignored, empty line as well
+# there must be no space between comas
 
 column1,column2
 1,2
@@ -86,10 +89,8 @@ column1,column2
 3,4
 ```
 
-This is the way pandas expects the data files to be.
-
-### ez-stan
-In this guide we will be estimating the mean and standard deviation using `ez-stan`, assuming a gaussian distribution, of a series of observations which are present in `data/gaussian.csv`.
+### smc-stan
+In this guide we will be estimating the mean and standard deviation using `smc-stan`, assuming a gaussian distribution, of a series of observations which are present in `data/gaussian.csv`.
 
 To do so we need to create a model for stan. Because stan is a programming language, models must be specifically written in said language. If you have never programmed in stan it's not that hard and there are plenty of tutorials available online and plenty of [documentation](https://mc-stan.org/users/documentation/).
 
@@ -131,7 +132,7 @@ Now how do you go about and configure that? You can either choose to write it do
 Now let's provide those parameters in a file, which is available over at `config/gaussian-stan.yml`:
 ```yml
 ## guassian-stan.yml
-# ez-stan configuration file to estimate the mean and standard deviation of a gaussian distribution
+# smc-stan configuration file to estimate the mean and standard deviation of a gaussian distribution
 
 # The names of the parameters
 # Must match the names defined in the stan model file!
@@ -155,12 +156,12 @@ warmup: 150
 
 And now we can execute our program by calling the model (`-m`, `--model`), the data (`-d`, `--data`) and the configuration file (`-y`, `--yml`):
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-stan.yml
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-stan.yml
 ```
 
 However this is exactly the same as using:
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10'}" --samples 250 --warmup 150
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10'}" --samples 250 --warmup 150
 ```
 
 Which will print a whole lot of stuff to your terminal, organized into sections that start with `[*]`, and show you the time series as well as the corner plot. Let's ignore the output for now.
@@ -168,17 +169,17 @@ Which will print a whole lot of stuff to your terminal, organized into sections 
 One thing that you probably saw is that the corner plots and the time-series don't have fancy Latex labels and there is no markers with the expected value. We can fix that by setting the labels (`-l`, `--labels`) and the markers (`--markers`):
 
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10)'}" --samples 250 --warmup 150 --labels "['\mu', '\sigma']" --markers "{'mu': 2, 'sigma': 3}"
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10)'}" --samples 250 --warmup 150 --labels "['\mu', '\sigma']" --markers "{'mu': 2, 'sigma': 3}"
 ```
 
 Now we take the previous example and, since there's a lot of stuff going on, so let's redirect the output to a given output folder (`-o`, `--output`) and don't show the plots on screen (`-ns`, `--no-show`):
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10)'}" --samples 250 --warmup 150 --labels "['\mu', '\sigma']" --markers "{'mu': 2, 'sigma': 3}" --output output/gaussian-stan --no-show
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --names "['mu', 'sigma']" --initial "{'mu': 'gauss(0, 10)', 'sigma': 'uniform(0, 10)'}" --samples 250 --warmup 150 --labels "['\mu', '\sigma']" --markers "{'mu': 2, 'sigma': 3}" --output output/gaussian-stan --no-show
 ```
 
 Now you see the reason why we made configuration files in the first place, this can get quite big, quite fast, even for simple models. Luckily, as we've shown before, we can place all of the flags above in a configuration file just like before, which is located over at `config/gaussian-fancy-stan.yml`. To do exactly the same thing as the big terminal command above you can instead write:
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-fancy-stan.yml --output output/gaussian-stan --no-show
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-fancy-stan.yml --output output/gaussian-stan --no-show
 ```
 
 On a high level you only need to know the following: The Latex table with the 1 and 2 sigma confidence interval is at `/output/gaussian-stan/CIs.tex`, the corner plot is over at `/output/gaussian-stan/plot/corner.png` and the time series, which can be used to check for convergence, is over at `/output/gaussian-stan/time-series.png`.
@@ -189,7 +190,7 @@ You can also save the chain to the output folder (`-sc`, `--save-chain`) and opt
 
 As we've said before if you wish to do so you can overwrite a given configuration argument provided in the configuration file by setting the corresponding flag in the CLI. In this next example we take the `/config/gaussian-fancy-stan.yml` and set the labels μ → α and σ → β:
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-fancy-stan.yml --labels "['\alpha', '\beta']" --output output/gaussian-stan --no-show
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-fancy-stan.yml --labels "['\alpha', '\beta']" --output output/gaussian-stan --no-show
 ```
 
 Last but not least we can change the number of chains we wish to run (`-c`, `--chains`). This is important because if you have more chains than you have hardware threads, then some chains will run sequentially. If on the other hand you set a number of chains equal to or lower than the total number of available hardware threads then they will run in parallel.
@@ -198,8 +199,8 @@ Each chain is independent and will do a number of steps equal to the number of s
 
 A version of the example so far with a custom number of chains is available at `config/gaussian-final-stan.yml`. This is a complete configuration file with all the available arguments, except for the output of course, that must always be provided in the CLI.
 
-### ez-emcee
-Here we will be doing the same thing as befores, estimating the mean and standard deviation, assuming a gaussian distribution, of a series of observations which are present in `data/gaussian.csv`, but this time using `ez-emcee`. For more information visit the official [emcee documentation](emcee.readthedocs.io/).
+### smc-emcee
+Here we will be doing the same thing as befores, estimating the mean and standard deviation, assuming a gaussian distribution, of a series of observations which are present in `data/gaussian.csv`, but this time using `smc-emcee`. For more information visit the official [emcee documentation](emcee.readthedocs.io/).
 
 As we did before, the first thing to do is define our model. Because `emcee` is written in Python a model is simply a Python function that returns the probability of a given parameter values knowing the provided data. Here are the contents of the file over at `model/gaussian.py`:
 ```python
@@ -238,7 +239,7 @@ def ln_probability(θ, value):
     return prior + ln_likelihood(θ, value)
 ```
 
-In `ez-emcee`, besides the model and the data, the following arguments are required: the names of the parameters, the initial conditions, the percentage that we use as a criteria to consider that convergence is met (it uses the autocorrelation time to do so) and the number of steps to sample the posterior distribution.
+In `smc-emcee`, besides the model and the data, the following arguments are required: the names of the parameters, the initial conditions, the percentage that we use as a criteria to consider that convergence is met (it uses the autocorrelation time to do so) and the number of steps to sample the posterior distribution.
 
 In short this means that the sampler will run until the autocorrelation time is changing by less than the user provided percentage (5% as given good results so far) and will then sample the posterior distribution by the number of steps the user as provided (usually in the scale of 10⁵).
 
@@ -267,7 +268,7 @@ samples: 1000
 
 Which we can now use to run our program accordingly:
 ```console
-$ ez-emcee --model model/gaussian.py --data data/gaussian.csv --yml config/gaussian-emcee.yml
+$ smc-emcee --model model/gaussian.py --data data/gaussian.csv --yml config/gaussian-emcee.yml
 ```
 
 However there are a few parameter which you might want to fine-tune related to the sampler: the maximum number of steps, the number of steps to check if convergence as been met and the number of walkers.
@@ -285,17 +286,17 @@ Because the way `emcee` handles saving the chain it is recommended to use `--tmp
 You can also thin the samples (`-t`, `--thin`) as a function of the autocorrelation time, show the time series plot (`-t`, `--time-series`) which is memory intensive in this case, and optionally don't show the plots on screen (`-ns`, `--no-show`) and don't show the fancy progress bar (`-np`, `--no-progress`).
 
 
-### ez-analyze
+### smc-analyze
 To get some output we've executed the following commands:
 ```console
-$ ez-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-final-stan.yml --output output/gaussian-final-stan --save-chain
+$ smc-stan --model model/gaussian.stan --data data/gaussian.csv --yml config/gaussian-final-stan.yml --output output/gaussian-final-stan --save-chain
 (supressed output)
-$ ez-emcee --model model/gaussian.py --data data/gaussian.csv --yml config/gaussian-final-emcee.yml --output output/gaussian-final-emcee --save-chain --tmp
+$ smc-emcee --model model/gaussian.py --data data/gaussian.csv --yml config/gaussian-final-emcee.yml --output output/gaussian-final-emcee --save-chain --tmp
 ```
 
 Which stored the sampler information in their respective directories. If you wish to plot them together in the same corner plot, do as follows:
 ```console
-$ ez-analyze -i output/gaussian-final-emcee output/gaussian-final-stan
+$ smc-analyze -i output/gaussian-final-emcee output/gaussian-final-stan
 ```
 ![](./example/analyzed/emcee-stan.png)
 
@@ -303,7 +304,7 @@ $ ez-analyze -i output/gaussian-final-emcee output/gaussian-final-stan
 
 This doesn't look very pretty, beside the fact that we haven't provided emcee to converge of course, so let's add the markers showing the expected value (`-m`, `--markers`), a legend (`--legend`) for each plot and change the alpha of both the filled region (`--filled-alpha`) and the contours (`--countor-alpha`):
 ```console
-$ ez-analyze -i output/gaussian-final-emcee output/gaussian-final-stan --markers "{'mu': 2, 'sigma': 3}" --legend "['stan', 'emcee']" --contour-alpha 0.25 --filled-alpha 0.9
+$ smc-analyze -i output/gaussian-final-emcee output/gaussian-final-stan --markers "{'mu': 2, 'sigma': 3}" --legend "['stan', 'emcee']" --contour-alpha 0.25 --filled-alpha 0.9
 ```
 ![](./example/analyzed/emcee-stan-fancy.png)
 
