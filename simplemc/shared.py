@@ -22,7 +22,7 @@ def corner(mcsamples, markers, output=None, noshow=False, filled_alpha=None, con
         g.triangle_plot(mcsamples, filled=True, markers=markers, contour_colors=contour_colors, colors=colors)
 
     if output:
-        plt.savefig(output)
+        plt.savefig(output, transparent=True)
     if not noshow:
         plt.show()
     plt.close()
