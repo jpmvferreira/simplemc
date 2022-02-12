@@ -44,7 +44,10 @@ This package requires the usage of Python version 3, as well as the following pa
 Dependencies are automatically resolved by `pip`.
 
 ### Stable version
-A stable version is not yet available, look below for instructions on how to install this package.
+This program can be installed directly from PyPI with:
+```console
+$ pip install simplifiedmc
+```
 
 ### Development version
 If you wish to use this package updated to the latests commits, you can install this package directly from the development branch on this repository using `pip`:
