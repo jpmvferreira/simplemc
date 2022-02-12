@@ -4,7 +4,7 @@ with open(f"README.md") as f:
     long_description = f.read()
 
 setup(name="simplifiedmc",
-      version="1.0.0",
+      version="1.0.1",
       description="A CLI that simplifies the usage of MCMC methods.",
       scripts=["bin/smc-stan", "bin/smc-emcee", "bin/smc-analyze"],
       packages=["simplifiedmc"],

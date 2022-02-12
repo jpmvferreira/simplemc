@@ -108,7 +108,7 @@ def main(args):
 
 if __name__ == "__main__":
     # create parser
-    parser = argparse.ArgumentParser(description = "A CLI to overlap the likelihoods produced by the samplers available on this package, using the getdist Python package.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplemc")
+    parser = argparse.ArgumentParser(description = "A CLI to overlap the likelihoods produced by the samplers available on this package, using the getdist Python package.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplifiedmc")
 
     # create argparser subgroups
     parser._action_groups.pop()

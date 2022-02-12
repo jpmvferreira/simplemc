@@ -151,7 +151,7 @@ def main(args):
 # run if called
 if __name__ == "__main__":
     # create parser
-    parser = argparse.ArgumentParser(description = "A CLI that simplifies the usage of the No-U-Turn sampler (NUTS), a variant of the Hamiltonian Monte Carlo (HMC), implemented in the Stan programming language.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplemc")
+    parser = argparse.ArgumentParser(description = "A CLI that simplifies the usage of the No-U-Turn sampler (NUTS), a variant of the Hamiltonian Monte Carlo (HMC), implemented in the Stan programming language.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplifiedmc")
 
     # create argparser subgroups
     parser._action_groups.pop()
