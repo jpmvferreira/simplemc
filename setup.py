@@ -5,7 +5,7 @@ with open(f"README.md") as f:
 
 setup(name="simplemc",
       version="0.0.0",
-      description="A CLI that simplifies the usage of MCMC methos, using different algorithms, on different models, with different datasets.",
+      description="A CLI that simplifies the usage of MCMC methods.",
       long_description=long_description,
       long_description_content_type="text/markdown",
       install_requires=[
