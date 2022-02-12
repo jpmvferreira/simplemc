@@ -1,9 +1,11 @@
 ## About
-A CLI that simplifies the usage of Markov Chain Monte Carlo (MCMC) methos, using different algorithms, on different models, with different datasets.
+A CLI that simplifies the usage of Markov Chain Monte Carlo methods.
 
-Currently it allows the user to constrain any given model, either using [Stan](https://mc-stan.org/), where the model must be coded using the Stan programming language, or [emcee](https://emcee.readthedocs.io/en/stable/), where the model is written in Python, using data from a .csv file.
+Currently, it implements [Stan](https://mc-stan.org/), where the model must be provided in the Stan programming language, or [emcee](https://emcee.readthedocs.io/en/stable/), where the model must be written in Python.
 
-The output can the be analyzed to produce publication ready plots, condensing the information of several runs.
+The output of the chains can then be easily analyzed using this same package.
+
+Although developed with cosmology in mind, this package is completely agnostic to the data and model it uses.
 
 
 ## Table of contents
@@ -45,7 +47,7 @@ Dependencies are automatically resolved by `pip`.
 A stable version is not yet available, look below for instructions on how to install this package.
 
 ### Development version
-If you want to get the latest version you can install this package directly from the development branch:
+If you wish to use this package updated to the latests commits, you can install this package directly from the development branch on this repository using `pip`:
 ```console
 $ pip install -e git+https://github.com/jpmvferreira/simplemc.git@dev#egg=simplemc
 ```
@@ -315,13 +317,13 @@ We could have also specified the labels (`-l`, `--labels`), however this default
 
 
 ## Credits
-The contents on this repository was developed by myself. You can contact me in the following ways:
+The contents in this repository were developed by myself, you can contact me in the following ways:
 - Personal email: [jose@jpferreira.me](mailto:jose@jpferreira.me) - [[PGP key](https://pastebin.com/REkhQKg2)]
 - Institutional email: [joseferreira@alunos.fc.ul.pt](mailto:joseferreira@alunos.fc.ul.pt) - [[PGP key](https://pastebin.com/rfBpi8jc)]
 
 
 ## Contributing
-Any discussion, suggestions or bug reports are always welcome. If you wish to contribute, do not hesitate to open up an issue in the issue section of this repository, or even send me an e-mail.
+Any discussion, suggestions, pull requests or bug reports are always welcome. If you wish to submit you code, pull requests should be targeted towards the dev branch, otherwise, feel free to use this issue section in this repository, or even send me an email.
 
 
 ## Release cycle
@@ -335,8 +337,8 @@ Each time that there is an update which is not backwards compatible (e.g.: remov
 
 In this repository you will find branches for the stable version (master) and the development version (dev). All modifications are done in the dev branch and, after being tested, are merged in the master branch. After a version bump the new version will be released.
 
-This means that, were you wish to contribute, pull requests should be targeted towards the dev branch.
-
 
 ## License
-[MIT](./license.md)
+All of the contents provided in this repository are available under the MIT license.
+
+For further information, refer to the file [LICENSE.md](./LICENSE.md) provided in this repository.
