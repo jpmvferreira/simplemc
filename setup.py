@@ -3,11 +3,11 @@ from setuptools import setup
 with open(f"README.md") as f:
     long_description = f.read()
 
-setup(name="simplemc",
+setup(name="simplifiedmc",
       version="0.0.0",
       description="A CLI that simplifies the usage of MCMC methods.",
       scripts=["bin/smc-stan", "bin/smc-emcee", "bin/smc-analyze"],
-      packages=["simplemc"],
+      packages=["simplifiedmc"],
       long_description=long_description,
       long_description_content_type="text/markdown",
       install_requires=[
@@ -22,7 +22,7 @@ setup(name="simplemc",
         "pystan",
         "pyyaml",
       ],
-      url="https://github.com/jpmvferreira/simplemc",
+      url="https://github.com/jpmvferreira/simplifiedmc",
       author="José Ferreira",
       author_email="jose@jpferreira.me",
       license="MIT",

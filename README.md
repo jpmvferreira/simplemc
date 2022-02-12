@@ -49,13 +49,13 @@ A stable version is not yet available, look below for instructions on how to ins
 ### Development version
 If you wish to use this package updated to the latests commits, you can install this package directly from the development branch on this repository using `pip`:
 ```console
-$ pip install -e git+https://github.com/jpmvferreira/simplemc.git@dev#egg=simplemc
+$ pip install -e git+https://github.com/jpmvferreira/simplifiedmc.git@dev#egg=simplifiedmc
 ```
 
 If instead you wish to make changes to the source code, start by cloning the development branch locally followed by an installation using `pip` with the `-e`, `--editable` flag:
 ```console
-$ git clone -b dev https://github.com/jpmvferreira/simplemc
-$ pip install -e simplemc
+$ git clone -b dev https://github.com/jpmvferreira/simplifiedmc
+$ pip install -e simplifiedmc
 ```
 
 
@@ -71,12 +71,12 @@ To make getting started easy there's a folder named `example` on this repository
 
 Start by cloning this repository locally (you can skip this step if you install the development version):
 ```console
-$ git clone https://github.com/jpmvferreira/simplemc
+$ git clone https://github.com/jpmvferreira/simplifiedmc
 ```
 
 And now change directory to this folder, where all the action will take place:
 ```console
-$ cd simplemc/example
+$ cd simplifiedmc/example
 ```
 
 An additional note, the format for any data file provided must be the following:

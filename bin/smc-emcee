@@ -15,9 +15,9 @@ import time
 import sys
 import os
 
-# local imports
-from simplemc.emcee import load, save, autocorrelation, timeseries, runlog
-from simplemc.shared import corner, syslog, CIs
+# simplifiedmc imports
+from simplifiedmc.emcee import load, save, autocorrelation, timeseries, runlog
+from simplifiedmc.shared import corner, syslog, CIs
 
 
 # avoid numpy parallelization because it conflicts with emcee parallelization
@@ -218,7 +218,7 @@ def main(args):
 # run if called
 if __name__ == "__main__":
     # create parser
-    parser = argparse.ArgumentParser(description = "A CLI simplifies the usage of the Affine Invariant MCMC Ensemble sampler, implemented in the emcee Python package.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplemc")
+    parser = argparse.ArgumentParser(description = "A CLI simplifies the usage of the Affine Invariant MCMC Ensemble sampler, implemented in the emcee Python package.", add_help=False, epilog="Documentation, bug reports, suggestions and discussions at:\nhttps://github.com/jpmvferreira/simplifiedmc")
 
     # create argparser subgroups
     parser._action_groups.pop()
