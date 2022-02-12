@@ -6,6 +6,8 @@ with open(f"README.md") as f:
 setup(name="simplemc",
       version="0.0.0",
       description="A CLI that simplifies the usage of MCMC methods.",
+      scripts=["bin/smc-stan", "bin/smc-emcee", "bin/smc-analyze"],
+      packages=["simplemc"],
       long_description=long_description,
       long_description_content_type="text/markdown",
       install_requires=[
@@ -24,5 +26,4 @@ setup(name="simplemc",
       author="José Ferreira",
       author_email="jose@jpferreira.me",
       license="MIT",
-      scripts=["bin/smc-stan", "bin/smc-emcee", "bin/smc-analyze"],
       zip_safe=False)
