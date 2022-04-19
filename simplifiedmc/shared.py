@@ -35,13 +35,8 @@ def syslog(file=sys.stdout):
     if file != sys.stdout:
         file = open(file, "w")
         print("## sys.log", file=file)
-        print("# information regarding the system and the date in which this run was executed", file=file)
+        print("# information on the system used to perform this run", file=file)
         print("", file=file)
-
-    print("$ date", file=file)
-    date = os.popen("date").read()[:-1]
-    print(f"{date}", file=file)
-    print("", file=file)
 
     print("$ uname -a", file=file)
     uname = os.popen("uname -a").read()[:-1]
