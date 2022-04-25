@@ -1,8 +1,10 @@
 # imports
+from datetime import datetime, timezone
 from multiprocessing import cpu_count
 from random import gauss, uniform
 import matplotlib.pyplot as plt
 import numpy as np
+import arviz as az
 import yaml
 import sys
 import os
@@ -136,6 +138,46 @@ def save(file, names, labels, initial, markers, samples, warmup, chains, PSIS_LO
 
     return
 
+# get model selection criteria
+# (can be easily adapted to emcee and moved to shared.py)
+def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout):
+    if file != sys.stdout:
+        file = open(file, "w")
+        print("## criteria.log", file=file)
+        print("# model selection criteria\n", file=file)
+
+    if PSIS_LOO_CV:
+        value, error = az.loo(fit)[0:2]
+        print(f"PSIS-LOO-CV: {value} ± {error}", file=file)
+    else:
+        print("PSIS-LOO-CV: Not calculated", file=file)
+
+    if WAIC:
+        value, error = az.waic(fit)[0:2]
+        print(f"WAIC: {value} ± {error}", file=file)
+    else:
+        print("WAIC: Not calculated", file=file)
+
+    if AIC:
+        print("AIC: Not implemented (yet!)")  # to-do
+    else:
+        print("AIC: Not calculated", file=file)
+
+    if BIC:
+        print("BIC: Not implemented (yet!)")  # to-do
+    else:
+        print("BIC: Not calculated", file=file)
+
+    if DIC:
+        print("DIC: Not implemented (yet!)")  # to-do
+    else:
+        print("DIC: Not calculated", file=file)
+
+    if file != sys.stdout:
+        file.close()
+
+    return
+
 
 # convert fit to a numpy array of size [steps, chains, ndim], with all of the computed steps
 def getsteps(fit, names, samples, warmup, chains, ndim):
@@ -194,7 +236,8 @@ def runlog(timeelapsed, file=sys.stdout):
         print("# information regarding this run\n", file=file)
 
     print("# program version", file=file)
-    version = "dev" if smc.__version__ == "0.0.0" else smc.__version__
+    date = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    version = f"dev on {date} (UTC)" if smc.__version__ == "0.0.0" else smc.__version__
     print(f"{version}", file=file)
     print("", file=file)
 

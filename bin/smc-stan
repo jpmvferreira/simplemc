@@ -13,7 +13,7 @@ import time
 import os
 
 # simplifiedmc imports
-from simplifiedmc.stan import load, save, getsteps, getflatsamples, timeseries, runlog
+from simplifiedmc.stan import load, save, criteria, getsteps, getflatsamples, timeseries, runlog
 from simplifiedmc.shared import corner, syslog, CIs
 
 
@@ -115,11 +115,11 @@ def main(args):
     summary = az.summary(fit)
     summary.to_csv(path_or_buf=f"{output}/log/summary.csv")
 
-    # save 1 and 2 sigma regions in a latex table
+    # save confidence intervals
     CIs(mcsamples, file=f"{output}/CIs.tex")
 
-    # compute model selection criteria(s)
-    # [!] TO-DO
+    # compute and save model selection criteria
+    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log")
 
     # save run information
     runlog(timeelapsed, file=f"{output}/log/run.log")
