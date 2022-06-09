@@ -119,7 +119,7 @@ def main(args):
     CIs(mcsamples, file=f"{output}/CIs.tex")
 
     # compute and save model selection criteria
-    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log")
+    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log", plotkhat=f"{output}/plot/khat.png", noshow=hide_plots)
 
     # save run information
     runlog(timeelapsed, file=f"{output}/log/run.log")
@@ -142,6 +142,7 @@ if __name__ == "__main__":
     sampler = parser.add_argument_group("Sampler configuration")
     model = parser.add_argument_group("Model selection criteria")
     output = parser.add_argument_group("Output configuration")
+    run = parser.add_argument_group("Run configuration")
     help = parser.add_argument_group("Help dialog")
 
     # required arguments
@@ -150,7 +151,7 @@ if __name__ == "__main__":
     required.add_argument("-o", "--output", type=str, help="Output folder.", required=True)
 
     # global configuration file
-    config.add_argument("-cfg", "--config", type=str, help="YAML file to configure the program/sampler behaviour. The arguments available in the next section, if provided, will overwrite the configuration provided by this file.")
+    config.add_argument("-cfg", "--config", type=str, help="YAML file to configure the program/sampler behaviour. The arguments available in the next sections, if provided, will overwrite the configuration provided by this file.")
 
     # sampler configuration
     sampler.add_argument("-n", "--names", type=str, help="String with a Python like list with the names for each parameter, e.g.: \"['a', 'b']\". Must match the names defined in the .stan model file.")
@@ -159,20 +160,23 @@ if __name__ == "__main__":
     sampler.add_argument("--markers", type=str, help="String with a Python style dictionary with the line markers to show rendered in the plots, e.g.: \"{'a': 0.5, 'b': 1.2}\". Defaults to none.")
     sampler.add_argument("-s", "--samples", type=int, help="Number of steps to sample the posterior distribution, after the warmup.")
     sampler.add_argument("-w", "--warmup", type=int, help="Number of steps to warmup each chain.")
-    sampler.add_argument("-c", "--chains", type=int, help="Number of chains to run which will either run in parallel or sequentially, based on the number of available threads. Defaults to all available hardware threads.")
+    sampler.add_argument("-c", "--chains", type=int, help="Number of chains to run. Will run in parallel or sequentially based on the number of available threads, which can be limited with 'threads' configuration.")
 
     # model selection criteria
     model.add_argument("--PSIS-LOO-CV", action="store_true", help="Compute the Pareto-smoothed importance sampling leave-one-out cross-validation.")
     model.add_argument("--WAIC", action="store_true", help="Compute the Watanabe–Akaike information criterion.")
-    model.add_argument("--AIC", action="store_true", help="Compute the Akaike information criterion.")
-    model.add_argument("--BIC", action="store_true", help="Compute the Bayesian information criterion.")
-    model.add_argument("--DIC", action="store_true", help="Compute the deviance information criterion.")
+    model.add_argument("--AIC", action="store_true", help="Compute the Akaike information criterion. (NO WORKERINO)")
+    model.add_argument("--BIC", action="store_true", help="Compute the Bayesian information criterion. (NO WORKERINO)")
+    model.add_argument("--DIC", action="store_true", help="Compute the deviance information criterion. (NO WORKERINO)")
 
     # output configuration
     output.add_argument("-ow", "--overwrite", action="store_true", help="Overwrite existing files, if they exist.")
     output.add_argument("-sc", "--save-chain", action="store_true", help="Saves the chain to disk, in HDF5.")
     output.add_argument("-co", "--compress", action="store_true", help="Compress the chain, using LZF.")
     output.add_argument("-hp", "--hide-plots", action="store_true", help="Don't show plots on screen.")
+
+    # run configuration
+    run.add_argument("-t", "--threads", type=int, help="Set a maximum number of threads. Defaults to either the number of chains, or the available hardware threads, depending on which is lowest. (NO WORKERINO)")
 
     # add help to its own subsection
     help.add_argument("-h", "--help", action="help", default=argparse.SUPPRESS, help="Show this help message and exit.")

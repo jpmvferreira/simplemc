@@ -140,14 +140,24 @@ def save(file, names, labels, initial, markers, samples, warmup, chains, PSIS_LO
 
 # get model selection criteria
 # (can be easily adapted to emcee and moved to shared.py)
-def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout):
+def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout, plotkhat=None, noshow=False):
     if file != sys.stdout:
         file = open(file, "w")
         print("## criteria.log", file=file)
         print("# model selection criteria\n", file=file)
 
     if PSIS_LOO_CV:
-        value, error = az.loo(fit)[0:2]
+        loo = az.loo(fit, pointwise=True)
+        value, error = loo[0:2]
+
+        if plotkhat:
+            az.plot_khat(loo, show_bins=True)
+            if plotkhat:
+                plt.savefig(plotkhat, transparent=True)
+            if not noshow:
+                plt.show()
+            plt.close()
+
         print(f"PSIS-LOO-CV: {value} ± {error}", file=file)
     else:
         print("PSIS-LOO-CV: Not calculated", file=file)
@@ -245,7 +255,7 @@ def runlog(timeelapsed, file=sys.stdout):
     print(f"{timeelapsed}", file=file)
     print("", file=file)
 
-    print("# finish date", file=file)
+    print("# finish date", file=file)  # put this in UTC!
     date = os.popen("date").read()[:-1]
     print(f"{date}", file=file)
 
