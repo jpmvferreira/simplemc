@@ -85,12 +85,32 @@ def main(args):
     mcsamples = MCSamples(samples=flatsamples, names=names, labels=labels)
 
     # plotting routines
-    print("\n[*] Plotting routines")
+    print("\n[*] Plotting corner plot and time series")
     timeseries(totalsteps, names, labels, markers, samples, warmup, chains, ndim, output=f"{output}/plot/time-series.png", noshow=hide_plots)
     corner(mcsamples, markers, output=f"{output}/plot/corner.png", noshow=hide_plots)
 
+    # save the chain
+    if savechain:
+        print("\n[*] Saving the chain to output folder")
+        with h5py.File(f"{output}/chain.h5", "w") as file:
+            if compress:
+                dataset = file.create_dataset("chain", data=totalsteps, compression="lzf", dtype="f")
+            else:
+                dataset = file.create_dataset("chain", data=totalsteps, dtype="f")
+
     # send relevant information to output folder
-    print("\n[*] Saving to output folder")
+    print("\n[*] Saving other data to output folder")
+
+    # compute and save model selection criteria
+    plotkhat = f"{output}/plot/khat.png" if PSIS_LOO_CV else None
+    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log", plotkhat=plotkhat, noshow=hide_plots)
+
+    # save confidence intervals
+    CIs(mcsamples, file=f"{output}/CIs.tex")
+
+    # save arviz summary
+    summary = az.summary(fit)
+    summary.to_csv(path_or_buf=f"{output}/log/summary.csv")
 
     # save configuration arguments
     file = f"{output}/archive/config.yml"
@@ -102,24 +122,6 @@ def main(args):
     # save the data file(s)
     for file in data:
         os.system(f"cp {file} {output}/archive/data")
-
-    # save the chain
-    if savechain:
-        with h5py.File(f"{output}/chain.h5", "w") as file:
-            if compress:
-                dataset = file.create_dataset("chain", data=totalsteps, compression="lzf", dtype="f")
-            else:
-                dataset = file.create_dataset("chain", data=totalsteps, dtype="f")
-
-    # save arviz summary
-    summary = az.summary(fit)
-    summary.to_csv(path_or_buf=f"{output}/log/summary.csv")
-
-    # save confidence intervals
-    CIs(mcsamples, file=f"{output}/CIs.tex")
-
-    # compute and save model selection criteria
-    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log", plotkhat=f"{output}/plot/khat.png", noshow=hide_plots)
 
     # save run information
     runlog(timeelapsed, file=f"{output}/log/run.log")

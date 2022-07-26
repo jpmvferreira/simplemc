@@ -148,22 +148,16 @@ def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout, plotkhat=No
 
     if PSIS_LOO_CV:
         loo = az.loo(fit, pointwise=True)
+        print(loo)  # temp
         value, error = loo[0:2]
-
-        if plotkhat:
-            az.plot_khat(loo, show_bins=True)
-            if plotkhat:
-                plt.savefig(plotkhat, transparent=True)
-            if not noshow:
-                plt.show()
-            plt.close()
-
         print(f"PSIS-LOO-CV: {value} ± {error}", file=file)
     else:
         print("PSIS-LOO-CV: Not calculated", file=file)
 
     if WAIC:
-        value, error = az.waic(fit)[0:2]
+        waic = az.waic(fit)
+        print(waic)  # temp
+        value, error = waic[0:2]
         print(f"WAIC: {value} ± {error}", file=file)
     else:
         print("WAIC: Not calculated", file=file)
@@ -183,8 +177,13 @@ def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout, plotkhat=No
     else:
         print("DIC: Not calculated", file=file)
 
-    if file != sys.stdout:
-        file.close()
+    # plot khat (assumes PSIS-LOO-CV is computed)
+    if plotkhat:
+        az.plot_khat(loo, show_bins=True)
+        plt.savefig(plotkhat, transparent=True)
+        if not noshow:
+            plt.show()
+        plt.close()
 
     return
 
