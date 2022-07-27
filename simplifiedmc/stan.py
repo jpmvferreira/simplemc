@@ -140,25 +140,36 @@ def save(file, names, labels, initial, markers, samples, warmup, chains, PSIS_LO
 
 # get model selection criteria
 # (can be easily adapted to emcee and moved to shared.py)
-def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout, plotkhat=None, noshow=False):
-    if file != sys.stdout:
-        file = open(file, "w")
-        print("## criteria.log", file=file)
-        print("# model selection criteria\n", file=file)
+def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=None, plotkhat=None, noshow=False):
+    file = open(f"{output}/criteria.log", "w")
+    print("## criteria.log", file=file)
+    print("# model selection criteria\n", file=file)
 
     if PSIS_LOO_CV:
         loo = az.loo(fit, pointwise=True)
-        print(loo)  # temp
         value, error = loo[0:2]
         print(f"PSIS-LOO-CV: {value} ± {error}", file=file)
+
+        # extra information from PSIS-LOO-CV
+        file_psis = open(f"{output}/PSIS-LOO-CV.log", "w")
+        print(loo, file=file_psis)
+        print("Pareto k data for each observation (ordered):", file=file_psis)
+        print(list(loo.pareto_k.data), file=file_psis)
+        file_psis.close()
+        
     else:
         print("PSIS-LOO-CV: Not calculated", file=file)
 
     if WAIC:
         waic = az.waic(fit)
-        print(waic)  # temp
         value, error = waic[0:2]
         print(f"WAIC: {value} ± {error}", file=file)
+
+        # extra information from WAIC
+        file_waic = open(f"{output}/WAIC.log", "w")
+        print(waic, file=file_waic)
+        file_waic.close()
+
     else:
         print("WAIC: Not calculated", file=file)
 
@@ -185,6 +196,7 @@ def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=sys.stdout, plotkhat=No
             plt.show()
         plt.close()
 
+    file.close()
     return
 
 

@@ -27,14 +27,18 @@ def main(args):
     print("\n[*] Setting up the output folder")
     if output[-1] == "/":
         output == output[:-1]
+
     if os.path.exists(output):
         if int(os.popen(f"find {output} -type f | wc -l").read()) and not overwrite:
             raise Exception(f"Output folder '{output}' is not empty. Overwrite existing files with the -ow, --overwrite flag or pick a different output folder.")
+
     os.system(f"mkdir -p {output}")
     os.system(f"mkdir {output}/plot")
     os.system(f"mkdir {output}/archive")
     os.system(f"mkdir {output}/archive/data")
     os.system(f"mkdir {output}/log")
+    if PSIS_LOO_CV or WAIC or AIC or BIC or DIC:
+        os.system(f"mkdir {output}/criteria")
 
     # get input data from the provided .csv file(s)
     print("\n[*] Importing input data")
@@ -103,7 +107,7 @@ def main(args):
 
     # compute and save model selection criteria
     plotkhat = f"{output}/plot/khat.png" if PSIS_LOO_CV else None
-    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, file=f"{output}/criteria.log", plotkhat=plotkhat, noshow=hide_plots)
+    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=f"{output}/criteria", plotkhat=plotkhat, noshow=hide_plots)
 
     # save confidence intervals
     CIs(mcsamples, file=f"{output}/CIs.tex")
