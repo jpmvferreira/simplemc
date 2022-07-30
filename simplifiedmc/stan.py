@@ -140,13 +140,13 @@ def save(file, names, labels, initial, markers, samples, warmup, chains, PSIS_LO
 
 # get model selection criteria
 # (can be easily adapted to emcee and moved to shared.py)
-def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=None, plotkhat=None, noshow=False):
+def criteria(idata, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=None, plotkhat=None, noshow=False):
     file = open(f"{output}/criteria.log", "w")
     print("## criteria.log", file=file)
     print("# model selection criteria\n", file=file)
 
     if PSIS_LOO_CV:
-        loo = az.loo(fit, pointwise=True)
+        loo = az.loo(idata)
         value, error = loo[0:2]
         print(f"PSIS-LOO-CV: {value} ± {error}", file=file)
 
@@ -156,12 +156,12 @@ def criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=None, plotkhat=None, 
         print("Pareto k data for each observation (ordered):", file=file_psis)
         print(list(loo.pareto_k.data), file=file_psis)
         file_psis.close()
-        
+
     else:
         print("PSIS-LOO-CV: Not calculated", file=file)
 
     if WAIC:
-        waic = az.waic(fit)
+        waic = az.waic(idata)
         value, error = waic[0:2]
         print(f"WAIC: {value} ± {error}", file=file)
 

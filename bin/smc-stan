@@ -106,8 +106,11 @@ def main(args):
     print("\n[*] Saving other data to output folder")
 
     # compute and save model selection criteria
+    # important: trim the warmup steps as not to use them when computing the model selection criteria
+    idata = az.from_pystan(fit)
+    idata = idata.isel(draw=slice(-samples, None))
     plotkhat = f"{output}/plot/khat.png" if PSIS_LOO_CV else None
-    criteria(fit, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=f"{output}/criteria", plotkhat=plotkhat, noshow=hide_plots)
+    criteria(idata, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=f"{output}/criteria", plotkhat=plotkhat, noshow=hide_plots)
 
     # save confidence intervals
     CIs(mcsamples, file=f"{output}/CIs.tex")
