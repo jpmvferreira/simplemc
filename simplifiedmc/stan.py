@@ -228,7 +228,11 @@ def timeseries(totalsteps, names, labels, markers, samples, warmup, chains, ndim
     steps = np.arange(samples+warmup)
 
     for i in range(ndim):
-        ax = axes[i]
+        if ndim != 1:
+            ax = axes[i]
+        else:
+            ax = axes
+
         for j in range(chains):
             ax.plot(steps, totalsteps[:, j, i], alpha=0.75)
         ax.set_xlim(0, samples+warmup)
@@ -239,7 +243,11 @@ def timeseries(totalsteps, names, labels, markers, samples, warmup, chains, ndim
         ax.yaxis.set_label_coords(-0.1, 0.5)
         ax.grid()
 
-    axes[-1].set_xlabel("step number")
+    if ndim != 1:
+        axes[-1].set_xlabel("step number")
+    else:
+        axes.set_xlabel("step number")
+
     if output:
         plt.savefig(output, transparent=True)
     if not noshow:
