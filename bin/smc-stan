@@ -93,17 +93,16 @@ def main(args):
     timeseries(totalsteps, names, labels, markers, samples, warmup, chains, ndim, output=f"{output}/plot/time-series.png", noshow=hide_plots)
     corner(mcsamples, markers, output=f"{output}/plot/corner.png", noshow=hide_plots)
 
+    # send relevant information to output folder
+    print("\n[*] Saving data to output folder")
+
     # save the chain
     if savechain:
-        print("\n[*] Saving the chain to output folder")
         with h5py.File(f"{output}/chain.h5", "w") as file:
             if compress:
                 dataset = file.create_dataset("chain", data=totalsteps, compression="lzf", dtype="f")
             else:
                 dataset = file.create_dataset("chain", data=totalsteps, dtype="f")
-
-    # send relevant information to output folder
-    print("\n[*] Saving other data to output folder")
 
     # compute and save model selection criteria
     if PSIS_LOO_CV or WAIC or AIC or BIC or DIC:
@@ -111,6 +110,10 @@ def main(args):
         idata = idata.isel(draw=slice(-samples, None))  # .
         plotkhat = f"{output}/plot/khat.png" if PSIS_LOO_CV else None
         criteria(idata, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=f"{output}/criteria", plotkhat=plotkhat, noshow=hide_plots)
+
+    # save the log_likelihood as a numpy array
+    log_lik = idata["log_likelihood"]["log_lik"].data
+    np.save(f"{output}/log_lik.npy", log_lik)
 
     # save confidence intervals
     CIs(mcsamples, file=f"{output}/CIs.tex")
