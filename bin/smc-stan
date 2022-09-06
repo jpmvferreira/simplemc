@@ -111,9 +111,9 @@ def main(args):
         plotkhat = f"{output}/plot/khat.png" if PSIS_LOO_CV else None
         criteria(idata, PSIS_LOO_CV, WAIC, AIC, BIC, DIC, output=f"{output}/criteria", plotkhat=plotkhat, noshow=hide_plots)
 
-    # save the log_likelihood as a numpy array
-    log_lik = idata["log_likelihood"]["log_lik"].data
-    np.save(f"{output}/log_lik.npy", log_lik)
+        # save the log_likelihood as a numpy array
+        log_lik = idata["log_likelihood"]["log_lik"].data
+        np.save(f"{output}/log_lik.npy", log_lik)
 
     # save confidence intervals
     CIs(mcsamples, file=f"{output}/CIs.tex")
